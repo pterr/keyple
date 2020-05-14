@@ -12,8 +12,15 @@
 '---------------------------------------------------------------------------------
 
 @startuml
-package org.keyple.calypso #FFFFFF {
-  package transaction #FFFFFF {
+skinparam stereotypeIBorderColor BUSINESS
+skinparam stereotypeCBorderColor BUSINESS
+skinparam stereotypeEBorderColor BUSINESS
+skinparam shadowing false
+
+'package org.keyple.calypso #FFFFFF {
+together {
+'  package transaction #FFFFFF {
+  together {
 
     together {
       +interface PoRevokedService {
@@ -23,10 +30,10 @@ package org.keyple.calypso #FFFFFF {
       note as N1
       Default values in PoTransaction if PoSecuritySetting doesn't specify it:
         - session ModificationMode as ATOMIC
-        - session RatificationMode as CLOSE_RATIFIED in contacts transmission,
-          or as CLOSE_NOT_RATIFIED for a contactless transmission
+        - session RatificationMode as CLOSE_RATIFIED
         - PinTransmissionMode as ENCRYPTED if PoSecurity defined
-        - any KVC value is authorized
+        - any KIF/KVC values are authorized
+        - no verification is done for: HCE token expiration, revoked PO or SAM
       end note
 
       +interface SamRevokedService {
@@ -75,19 +82,20 @@ package org.keyple.calypso #FFFFFF {
         #Boolean isSvKvcAuthorized(byte kvc)
       }
 
-      +class SamResource {
-        +SamResource(<color:red>SeReader seReader</color>,
-        CalypsoSam calypsoSam);
+      +class "SeResource<CalypsoSam>" as SamResource {
+        +SeResource(<color:red>SeReader seReader</color>,
+        CalypsoSam sam);
       }
 
-      PoHceService "0..1" -right-o "1" PoSecuritySetting
-      PoSecuritySetting "1" o-right- "1" SamResource
+      PoHceService "0..1 " -right-o " 1" PoSecuritySetting
+      PoSecuritySetting "1 " o-right- " 0..1" SamResource
     }
 
-    +class PoResource {
-      +PoResource(<color:red>SeReader seReader</color>,
-      CalypsoPo calypsoPo);
+    +class "SeResource<CalypsoPo>" as PoResource {
+      +SeResource(<color:red>SeReader seReader</color>,
+      CalypsoPo po);
     }
+
 
     PoRevokedService -down[hidden]- PoHceService
     PoHceService -down[hidden]- PoResource
@@ -263,7 +271,14 @@ package org.keyple.calypso #FFFFFF {
     CURRENT_DF
   }
 
+  +enum ChannelControl {
+	KEEP_OPEN
+	CLOSE_AFTER
+  }
+
   PoTransaction -- SelectFileControl
+  PoTransaction -- ChannelControl
   AuthenticationMode -down[hidden]- SelectFileControl
+  ChannelControl -left[hidden]- SelectFileControl
 }
 @enduml

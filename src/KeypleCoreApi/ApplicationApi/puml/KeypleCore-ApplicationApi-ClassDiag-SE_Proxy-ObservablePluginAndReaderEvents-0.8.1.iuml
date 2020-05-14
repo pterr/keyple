@@ -12,6 +12,12 @@
 '---------------------------------------------------------------------------------
 
 @startuml
+skinparam stereotypeABorderColor BUSINESS
+skinparam stereotypeIBorderColor BUSINESS
+skinparam stereotypeCBorderColor BUSINESS
+skinparam stereotypeEBorderColor BUSINESS
+skinparam shadowing false
+
 !include KeypleCore-ApplicationApi-ClassDiag-SE_Proxy-ClassElements.iuml!SEPROXY_TERMINALAPPLICATION
 
 package org.eclipse.keyple.core.seproxy #FFFFFF {
@@ -75,4 +81,29 @@ SeProxyService -right[hidden]--> EventType_Plugin
 EventType_Plugin  -right[hidden]--> PluginObserver
 PluginObserver -right[hidden]--> ReaderObserver
 ReaderObserver  -right[hidden]--> EventType_Reader
+
+
+enum EventType_Plugin <<Plugin>>
+interface PluginObserver <<Plugin>>
+class PluginEvent <<Plugin>>
+interface ObservablePlugin <<Plugin>>
+hide <<Plugin>> stereotype
+
+enum EventType_Reader <<Reader>>
+interface ReaderObserver <<Reader>>
+class ReaderEvent <<Reader>>
+interface ObservableReader <<Reader>>
+enum PollingMode <<Reader>>
+enum NotificationMode <<Reader>>
+abstract AbstractDefaultSelectionsRequest <<Reader>>
+abstract AbstractDefaultSelectionsResponse <<Reader>>
+
+hide <<Reader>> stereotype
+
+skinparam class {
+  BackgroundColor<<Plugin>> Azure
+  BorderColor<<Plugin>> Blue
+  BackgroundColor<<Reader>> TECHNOLOGY
+  BorderColor<<Reader>> Green
+}
 @enduml

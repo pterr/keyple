@@ -12,11 +12,25 @@
 '---------------------------------------------------------------------------------
 
 @startuml
-package org.keyple.calypso.transaction #FFFFFF {
+'skinparam handwritten true
+skinparam stereotypeIBorderColor BUSINESS
+skinparam stereotypeCBorderColor BUSINESS
+skinparam stereotypeEBorderColor BUSINESS
+skinparam shadowing false
 
-  +class PoResource {
-    +PoResource(<color:red>SeReader seReader</color>,
-    CalypsoPo calypsoPo);
+'package org.keyple.calypso.transaction #FFFFFF {
+together {
+  +class "SeResource<CalypsoPo>" as PoResource {
+    +SeResource(<color:red>SeReader seReader</color>,
+    CalypsoPo po);
+  }
+
+  +class "SeResource<CalypsoSam>" as SamResource {
+    +SeResource(<color:red>SeReader seReader</color>,
+    CalypsoSam sam);
+  }
+
+  +class "<b>final</b> PoSecuritySetting" as PoSecuritySetting {
   }
 
   +class "<b>final</b> CalypsoPo" as CalypsoPo {
@@ -31,23 +45,20 @@ package org.keyple.calypso.transaction #FFFFFF {
     +<color:royalBlue><b><i>Xxx getData_Xxx()</i></b></color>
   }
 
-  +class "<b>final</b> PoSecuritySetting" as PoSecuritySetting {
-  }
-
   +class PoTransaction {
-    +PoTransaction(PoResource poResource, PoSecuritySetting[0..1] securitySetting)
+    +PoTransaction(SeResource<CalypsoPo> po, PoSecuritySetting[0..1] securitySetting)
 
-    +<color:royalBlue><b><i>prepareCommand_Xxx()</i></b></color>
+    +<b>final</b> <color:royalBlue><b><i>prepareCommand_Xxx()</i></b></color>
 
-    +<color:royalBlue><b><i>boolean processCommands_Xxx()</i></b></color>
+    +<b>final</b> <color:royalBlue><b><i>boolean processCommands_Xxx()</i></b></color>
 
-    +<color:royalBlue><b><i>Xxx_SecureData getXxx_SecureData()</i></b></color>
+    +<b>final</b> <color:royalBlue><b><i>Xxx_SecureData getXxx_SecureData()</i></b></color>
   }
 
-  PoResource -right[hidden]- PoSecuritySetting
   PoTransaction "1" o-up- "1" PoResource
   PoTransaction "1" o-up- "0..1" PoSecuritySetting
   PoResource "1" o-down- "1" CalypsoPo
-  'CalypsoPo -[hidden]right--> PoTransaction
+  SamResource "0..1 " -right-o " 1" PoSecuritySetting
+  PoResource -right[hidden]- SamResource
 }
 @enduml

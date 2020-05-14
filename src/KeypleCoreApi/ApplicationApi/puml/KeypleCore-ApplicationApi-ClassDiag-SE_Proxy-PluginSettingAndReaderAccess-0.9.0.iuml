@@ -12,6 +12,12 @@
 '---------------------------------------------------------------------------------
 
 @startuml
+skinparam stereotypeABorderColor BUSINESS
+skinparam stereotypeIBorderColor BUSINESS
+skinparam stereotypeCBorderColor BUSINESS
+skinparam stereotypeEBorderColor BUSINESS
+skinparam shadowing false
+
 package org.eclipse.keyple.core #FFFFFF {
   !include KeypleCore-ApplicationApi-ClassDiag-SE_Proxy-ClassElements.iuml!SEPROXY_UTIL
 
@@ -44,4 +50,20 @@ Nameable <|-- ReaderPlugin : extends
 Nameable <|-- SeReader : extends
 Configurable <|-- ReaderPlugin : extends
 Configurable <|-- SeReader : extends
+
+interface ReaderPlugin <<Plugin>>
+interface ObservablePlugin <<Plugin>>
+interface ReaderPoolPlugin <<Plugin>>
+hide <<Plugin>> stereotype
+
+interface SeReader <<Reader>>
+interface ObservableReader <<Reader>>
+hide <<Reader>> stereotype
+
+skinparam class {
+  BackgroundColor<<Plugin>> Azure
+  BorderColor<<Plugin>> Blue
+  BackgroundColor<<Reader>> TECHNOLOGY
+  BorderColor<<Reader>> Green
+}
 @enduml

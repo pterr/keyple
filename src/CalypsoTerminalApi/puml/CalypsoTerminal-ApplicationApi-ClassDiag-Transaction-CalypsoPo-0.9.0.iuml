@@ -12,7 +12,13 @@
 '---------------------------------------------------------------------------------
 
 @startuml
-package org.keyple.calypso.transaction #FFFFFF {
+skinparam stereotypeIBorderColor BUSINESS
+skinparam stereotypeCBorderColor BUSINESS
+skinparam stereotypeEBorderColor BUSINESS
+skinparam shadowing false
+
+'package org.keyple.calypso.transaction #FFFFFF {
+together {
   +class "<b>final</b> CalypsoPo" as CalypsoPo {
     ~CalypsoPo(<color:red>SeResponse selectionResponse</color>)
     +String getDfName()
@@ -78,13 +84,18 @@ package org.keyple.calypso.transaction #FFFFFF {
   }
   AccessLevel -down- DirectoryHeader
 
+/'
   +enum PoCategory {
-    PRIME_HCE,
-    PRIME_APPLET,
-    PRIME_NATIVE,
+    HCE,
+    PRIME_REV1,
+    PRIME_REV2,
+    PRIME_REV3,
+'    PRIME_APPLET,
+'    PRIME_NATIVE,
     LIGHT,
     BASIC
   }
+'/
 
   together {
     +class SvLoadLogRecord {
@@ -166,7 +177,7 @@ package org.keyple.calypso.transaction #FFFFFF {
       indicate the first byte of the record
       (00h for the APDU command).
 
-       - If datalengh is absent all the known
+       - If datalengh is absent, all the known
       bytes are returned.
     end note
 
@@ -176,7 +187,7 @@ package org.keyple.calypso.transaction #FFFFFF {
       +byte[] getContent(int numRecord, int dataOffset, int dataLength)
       +SortedMap<Integer, byte[]> getAllRecordsData()
 
-      +int getContentAsCounterValue(int numRecord)
+      +int getContentAsCounterValue(int numCounter)
       +SortedMap<Integer, Integer> getAllCountersValue()
     }
 
@@ -191,7 +202,7 @@ package org.keyple.calypso.transaction #FFFFFF {
   CalypsoPo "1" *-left- "1" DirectoryHeader
   CalypsoPo "1 " *-right- " 0..1" SvLoadLogRecord
   CalypsoPo "1" *-- "0..3" SvDebitLogRecord
-  CalypsoPo "*" -up- "1" PoCategory
+'  CalypsoPo "*" -up- "1" PoCategory
   CalypsoPo "1" *-down- "0..31" ElementaryFile
 }
 @enduml
